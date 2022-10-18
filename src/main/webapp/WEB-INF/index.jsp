@@ -4,6 +4,8 @@
     String login = (String) request.getSession().getAttribute("login");
     String password = (String) request.getSession().getAttribute("password");
     String repeatPassword = (String) request.getSession().getAttribute("repeatPassword");
+
+    String path = "/WebBasics";
 %>
 
 
@@ -17,6 +19,10 @@
     <title>Document</title>
 </head>
 <body>
+
+    <nav>
+        <a href="filters">Filters</a>
+    </nav>
 
     <form method="post">
         <p>Login:</p>
