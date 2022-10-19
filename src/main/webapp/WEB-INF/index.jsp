@@ -5,20 +5,18 @@
     String password = (String) request.getSession().getAttribute("password");
     String repeatPassword = (String) request.getSession().getAttribute("repeatPassword");
 
-    String path = "/WebBasics";
+    String path = request.getContextPath();
 %>
 
 
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
+
+<jsp:include page="/WEB-INF/headerfragment.jsp"/>
+
 <body>
+
+    <jsp:include page="/WEB-INF/authfragment.jsp" />
 
     <h1>Main</h1>
 

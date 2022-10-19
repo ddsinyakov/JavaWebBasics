@@ -1,0 +1,18 @@
+.auth-fragment {
+    background-color: moccasin;
+    text-align: center;
+    padding: 1ch;
+    width: 100%;
+}
+input[type=radio] {
+    visibility: hidden;
+}
+input[type=radio]:checked + label {
+    border: 1px solid salmon;
+    font-weight: bold;
+}
+label {
+    cursor: pointer;
+    font-size: larger;
+    font-variant: small-caps;
+}

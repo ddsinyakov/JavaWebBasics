@@ -1,4 +1,4 @@
-package step.learning;
+package step.learning.servlets;
 
 import step.learning.services.hash.MD5HashService;
 import step.learning.services.hash.Sha1HashService;

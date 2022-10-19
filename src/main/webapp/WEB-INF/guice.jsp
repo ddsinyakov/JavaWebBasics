@@ -3,13 +3,16 @@
 <%
     String hashed1 = (String) request.getSession().getAttribute("hashed1");
     String hashed2 = (String) request.getSession().getAttribute("hashed2");
+    String path = request.getContextPath();
 %>
 
 <html>
-<head>
-    <title>Title</title>
-</head>
+
+<jsp:include page="/WEB-INF/headerfragment.jsp"/>
+
 <body>
+    <jsp:include page="/WEB-INF/authfragment.jsp" />
+
     <h1>Inversion</h1>
 
     <form method="post">

@@ -1,4 +1,4 @@
-package step.learning;
+package step.learning.servlets;
 
 import step.learning.services.database.DataBaseProvider;
 import step.learning.services.database.MySQLProvider;

@@ -3,14 +3,17 @@
 <%
     String fromDemoFilter = (String) request.getAttribute("DemoFilter");
     String[] users = (String[]) request.getAttribute("Users");
+    String path = request.getContextPath();
 %>
 
 
 <html>
-<head>
-    <title>Filters</title>
-</head>
+
+<jsp:include page="/WEB-INF/headerfragment.jsp"/>
+
 <body>
+    <jsp:include page="/WEB-INF/authfragment.jsp" />
+
     <h1>Filters</h1>
 
     <p>
