@@ -1,9 +1,11 @@
 package step.learning.filters;
 
+import javax.inject.Singleton;
 import javax.servlet.*;
 import java.io.IOException;
 
 //@WebFilter("/*")
+@Singleton
 public class DemoFilter implements Filter {
 
     private FilterConfig filterConfig;
@@ -15,14 +17,11 @@ public class DemoFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("Filter starts");
 
         servletRequest.setAttribute("DemoFilter", "FilterWorks!");
         servletRequest.setCharacterEncoding("UTF-8");
 
         filterChain.doFilter(servletRequest, servletResponse);
-
-        System.out.println("Filter ends");
     }
 
     @Override

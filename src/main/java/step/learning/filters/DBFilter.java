@@ -3,11 +3,17 @@ package step.learning.filters;
 import step.learning.services.database.DataBaseProvider;
 import step.learning.services.database.MySQLProvider;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.servlet.*;
 import java.io.IOException;
 import java.sql.Connection;
 
+@Singleton
 public class DBFilter implements Filter {
+
+    @Inject()
+    private DataBaseProvider db;
 
     FilterConfig filterConfig;
 
@@ -18,9 +24,6 @@ public class DBFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
-        DataBaseProvider db = new MySQLProvider();
-
         if (db.getConnection() == null) {
             servletRequest.getRequestDispatcher("WEB-INF/static.jsp").forward(servletRequest, servletResponse);
         }

@@ -20,8 +20,11 @@
 </head>
 <body>
 
+    <h1>Main</h1>
+
     <nav>
         <a href="filters">Filters</a>
+        <a href="guice">Inversion</a>
     </nav>
 
     <form method="post">

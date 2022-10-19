@@ -2,6 +2,7 @@
 
 <%
     String fromDemoFilter = (String) request.getAttribute("DemoFilter");
+    String[] users = (String[]) request.getAttribute("Users");
 %>
 
 
@@ -10,7 +11,7 @@
     <title>Filters</title>
 </head>
 <body>
-    Filters
+    <h1>Filters</h1>
 
     <p>
         <% if (fromDemoFilter == null) { %>
@@ -23,5 +24,11 @@
     <p>
         User count: <%=request.getAttribute("Count")%>
     </p>
+
+    <ul>
+        <% for(String user: users) { %>
+            <%=user%> <br>
+        <% } %>
+    </ul>
 </body>
 </html>
