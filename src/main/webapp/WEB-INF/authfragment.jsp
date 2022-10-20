@@ -26,7 +26,7 @@
        <h1>
            Username: <%=user.getName()%>
        </h1>
-        <a href="#">Log out</a>
+        <a href="?logout=true">Log out</a>
     <% } else if (error != null) { %>
         <h2>User not found</h2>
     <% } %>

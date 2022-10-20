@@ -36,6 +36,12 @@ public class AuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpSession session = request.getSession();
 
+        if (request.getParameter("logout") != null) {
+            session.removeAttribute("AuthUserId");
+            response.sendRedirect(request.getContextPath());
+            return;
+        }
+
         if (request.getMethod().equalsIgnoreCase("POST")) {
             String userLogin = request.getParameter("userLogin");
             String userPassword = request.getParameter("userPassword");
