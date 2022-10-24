@@ -4,6 +4,7 @@
 <%
     User user = (User) request.getAttribute("AuthUser");
     String error = (String) request.getAttribute("AuthError");
+    String path = request.getContextPath();
 %>
 
 <div class="auth-fragment">
@@ -20,6 +21,7 @@
         </label>
 
         <input type="submit" value="Submit">
+        <a class="auth-sign-up" href="<%=path%>/register/"> Sign up</a>
     </form>
 
     <% if (user != null) { %>

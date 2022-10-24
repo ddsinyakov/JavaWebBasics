@@ -8,6 +8,7 @@ import step.learning.servlets.GuiceServlet;
 import step.learning.servlets.HomeServlet;
 import step.learning.filters.DBFilter;
 import step.learning.filters.DemoFilter;
+import step.learning.servlets.RegUserServlet;
 
 public class ConfigServlet extends ServletModule {
     @Override
@@ -18,6 +19,8 @@ public class ConfigServlet extends ServletModule {
 
         serve("/filters").with(FiltersServlet.class);
         serve("/guice").with(GuiceServlet.class);
+        serve("/register/").with(RegUserServlet.class);
         serve("").with(HomeServlet.class);
+
     }
 }

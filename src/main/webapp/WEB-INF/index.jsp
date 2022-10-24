@@ -41,6 +41,8 @@
         <input type="password" id="repeatPassword" name="repeatPassword">
         <br>
 
+        <input type="hidden" value="true" name="loginForm">
+
         <input type="submit" value="Submit">
     </form>
 

@@ -43,22 +43,25 @@ public class AuthFilter implements Filter {
         }
 
         if (request.getMethod().equalsIgnoreCase("POST")) {
-            String userLogin = request.getParameter("userLogin");
-            String userPassword = request.getParameter("userPassword");
+            String userForm = request.getParameter("userForm");
+            if (userForm != null ) {
+                String userLogin = request.getParameter("userLogin");
+                String userPassword = request.getParameter("userPassword");
 
-            if(userLogin != null && userPassword != null) {
-                User user = dao.getUserByCredentials(userLogin, userPassword);
+                if (userLogin != null && userPassword != null) {
+                    User user = dao.getUserByCredentials(userLogin, userPassword);
 
-                if (user != null) {
-                    session.setAttribute("AuthUserId", user.getId());
-                    System.out.println(user.getLogin() + " " + user.getName() + " " + user.getPass());
-                } else {
-                    session.setAttribute("AuthError", "Credentials Incorrect");
-                    System.out.println("Not found");
+                    if (user != null) {
+                        session.setAttribute("AuthUserId", user.getId());
+                        System.out.println(user.getLogin() + " " + user.getName() + " " + user.getPass());
+                    } else {
+                        session.setAttribute("AuthError", "Credentials Incorrect");
+                        System.out.println("Not found");
+                    }
+
+                    response.sendRedirect(request.getRequestURI());
+                    return;
                 }
-
-                response.sendRedirect(request.getRequestURI());
-                return;
             }
         }
 
