@@ -9,6 +9,7 @@ public class User {
     private String pass;
     private String name;
     private String salt;
+    private String avatar;
 
     public User () {
 
@@ -20,6 +21,16 @@ public class User {
         pass = set.getString("pass");
         name = set.getString("name");
         salt = set.getString("salt");
+        avatar = set.getString("avatar");
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public User setAvatar(String avatar) {
+        this.avatar = avatar;
+        return this;
     }
 
     public String getId() {

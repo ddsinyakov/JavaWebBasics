@@ -39,7 +39,7 @@ public class UserDAO {
 
         String passHash = this.hashPassword(user.getPass(), salt);
 
-        String sql = "INSERT INTO Users(`id`,`login`,`pass`,`name`, `salt`) VALUES(?,?,?,?,?)" ;
+        String sql = "INSERT INTO Users(`id`,`login`,`pass`,`name`, `salt`, `avatar`) VALUES(?,?,?,?,?,?)" ;
 
         try( PreparedStatement prep = connection.prepareStatement( sql ) ) {
             prep.setString(1, id);
@@ -47,6 +47,7 @@ public class UserDAO {
             prep.setString(3, passHash);
             prep.setString(4, user.getName());
             prep.setString(5, salt);
+            prep.setString(6, user.getAvatar());
             prep.executeUpdate();
         }
         catch( SQLException ex ) {

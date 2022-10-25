@@ -46,7 +46,7 @@
           <h3 class="card-title text-center reg-ok"><%=regOk%></h3>
         <% } %>
         <div class="card-body py-md-4">
-          <form method="post" action="">
+          <form method="post" action="" enctype="multipart/form-data">
             <div class="form-group">
               <input type="text" class="form-control" name="userLogin" placeholder="Login"
                 <% if (lastUserLogin != null) { %>
@@ -59,7 +59,8 @@
                 <% } %>
               /><br>
               <input type="password" class="form-control" name="userPassword" placeholder="Password"><br>
-              <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm password">
+              <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm password"><br>
+              <input type="file" class="form-control" name="userAvatar">
             </div>
             <br>
             <div class="d-flex flex-row align-items-center justify-content-between">

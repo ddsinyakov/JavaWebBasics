@@ -4,22 +4,33 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import step.learning.dao.UserDAO;
 import step.learning.entities.User;
+import step.learning.services.MimeService;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.annotation.MultipartConfig;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.rmi.server.ExportException;
+import java.util.Arrays;
+import java.util.UUID;
 
 @Singleton
+@WebServlet("/register/")
+@MultipartConfig
 public class RegUserServlet extends HttpServlet {
-    private final UserDAO userDAO ;
 
-    @Inject
-    public RegUserServlet( UserDAO userDAO ) {
-        this.userDAO = userDAO ;
-    }
+
+    @Inject private UserDAO userDAO ;
+    @Inject private MimeService mimeService;
+
+//    @Inject
+//    public RegUserServlet( UserDAO userDAO ) {
+//        this.userDAO = userDAO ;
+//    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -77,10 +88,42 @@ public class RegUserServlet extends HttpServlet {
             if( ! userName.equals( userName.trim() ) ) {
                 throw new Exception( "Name could not contain trailing spaces" ) ;
             }
+
+            String savedName = "";
+
+            // region check file
+            Part userAvatar = req.getPart("userAvatar");
+            if (userAvatar == null) {
+                throw new ExportException("Form integrity violation");
+            }
+            long size = userAvatar.getSize();
+            if (size > 0) {
+                String userFilename = userAvatar.getSubmittedFileName();
+                int dotPosition = userFilename.lastIndexOf(".");
+                if(dotPosition == -1) {
+                    throw new Exception("File extension required");
+                }
+
+                String extension = userFilename.substring(dotPosition);
+                if(!mimeService.isImage(extension)) {
+                    throw new Exception("File type unsupported");
+                }
+
+                savedName = UUID.randomUUID() + extension;
+
+                String path = req.getServletContext().getRealPath("/");
+
+                File file = new File(path + "../upload/" + savedName);
+
+                Files.copy(userAvatar.getInputStream(), file.toPath());
+            }
+            // endregion
+
             User user = new User() ;
             user.setName( userName ) ;
             user.setLogin( userLogin ) ;
             user.setPass( userPassword ) ;
+            user.setAvatar( savedName );
             if( userDAO.add( user ) == null ) {
                 throw new Exception( "Server error, try later" ) ;
             }
