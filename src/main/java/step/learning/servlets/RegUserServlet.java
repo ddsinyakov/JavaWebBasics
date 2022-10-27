@@ -142,4 +142,9 @@ public class RegUserServlet extends HttpServlet {
         }
         resp.sendRedirect( req.getRequestURI() ) ;
     }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().print( "PUT works " + req.getParameter( "name" ) ) ;
+    }
 }

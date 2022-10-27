@@ -1,0 +1,11 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Дима Синяков
+  Date: 25.10.2022
+  Time: 11:27
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<div>
+  <h1>Unauthorized</h1>
+</div>

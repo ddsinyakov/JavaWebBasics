@@ -20,14 +20,21 @@
             <input type="text" name="userPassword">
         </label>
 
+        <input type="hidden" name="userForm" value="true">
+
         <input type="submit" value="Submit">
         <a class="auth-sign-up" href="<%=path%>/register/"> Sign up</a>
     </form>
 
     <% if (user != null) { %>
-       <h1>
+        <h1>
            Username: <%=user.getName()%>
-       </h1>
+        </h1>
+
+        <a href="<%=path%>/profile">
+            <img src="<%=path%>/image/<%=user.getAvatar()%>" alt="" class="avatar">
+        </a>
+
         <a href="?logout=true">Log out</a>
     <% } else if (error != null) { %>
         <h2>User not found</h2>

@@ -16,3 +16,7 @@ label {
     font-size: larger;
     font-variant: small-caps;
 }
+
+.avatar {
+    width: 30px;
+}
