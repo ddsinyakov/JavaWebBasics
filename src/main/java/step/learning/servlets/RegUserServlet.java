@@ -145,6 +145,16 @@ public class RegUserServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User toChange = new User();
+        toChange.setId((String) req.getSession().getAttribute("AuthUserId"));
+        toChange.setName((String) req.getParameter("name"));
+
+        System.out.println("Id: " + toChange.getId());
+        System.out.println("Name: " + toChange.getName());
+
+        boolean res = userDAO.updateUser(toChange);
+        if(!res) System.out.println("Something went wrong");
+
         resp.getWriter().print( "PUT works " + req.getParameter( "name" ) ) ;
     }
 }
