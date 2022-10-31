@@ -16,7 +16,7 @@
 
 <body>
 
-    <jsp:include page="/WEB-INF/authfragment.jsp" />
+<%--    <jsp:include page="/WEB-INF/authfragment.jsp" />--%>
 
     <h1>Main</h1>
 

@@ -12,38 +12,97 @@
   <fieldset class="profile-fieldset">
     <legend>Возможно для изменения</legend>
     <p class="profile-name">
-      <span>Name:</span> <b><%= authUser.getName() %></b>
+      <span>Name:</span> <b data-fieldname="name"><%= authUser.getName() %></b>
+    </p>
+    <p class="profile-name">
+      <span>Login:</span> <b data-fieldname="login"><%= authUser.getLogin() %></b>
+    </p>
+    <p class="profile-fieldset-avatar">
+      <span>Image:</span>
+      <input type="file" id="avatar-input" name="avatar-input"> <br>
+      <input type="button" value="Save" id="avatar-save-button">
     </p>
   </fieldset>
+
 </div>
 <script>
   document.addEventListener( "DOMContentLoaded", () => {
-    const nameElement = document.querySelector( ".profile-name b" ) ;
-    if( ! nameElement ) throw "'.profile-name b' not found" ;
-    nameElement.addEventListener( "click", nameClick ) ;
-    nameElement.addEventListener( "blur", nameBlur ) ;
+    const avatarSaveButton = document.getElementById("avatar-save-button")
+    if (!avatarSaveButton) throw "'#avatar-save-button' not found"
+
+    avatarSaveButton.addEventListener('click', avatarSaveClick)
+
+    for(let element of  document.querySelectorAll( ".profile-name b" )) {
+      element.addEventListener( "click", nameClick )
+      element.addEventListener( "blur", nameBlur )
+      element.addEventListener( "keydown", nameKeyDown )
+    }
   });
+
   function nameClick(e) {
-    e.target.setAttribute( "contenteditable", "true" ) ;
-    e.target.focus() ;
-    e.target.savedText = e.target.innerText ;
+    e.target.setAttribute( "contenteditable", "true" )
+    e.target.focus()
+    e.target.savedText = e.target.innerText
   }
+
   function nameBlur(e) {
-    e.target.removeAttribute( "contenteditable" ) ;
+    e.target.removeAttribute( "contenteditable" )
     if( e.target.savedText !== e.target.innerText ) {
       if( confirm( "Сохранить изменения?" ) ) {
-        // console.log( e.target.innerText ) ;
-        fetch( "/WebBasics/register/?name="+e.target.innerText, {
+        const fieldName = e.target.getAttribute("data-fieldname")
+        const fieldValue = e.target.innerText
+        const url = "/WebBasics/register/?" + fieldName + "=" + fieldValue
+        console.log(url)
+        fetch( url, {
           method: "PUT",
-          headers: {
-          },
+          headers: {},
           body: ""
-        }).then( r => r.text() )
-                .then( t => console.log(t) ) ;
+        })
+          .then( r => r.text() )
+          .then( t => {
+            console.log(t)
+            if (t === "Ok") location = location
+            else {
+              e.target.innerText = e.target.savedText
+              alert(t)
+            }
+          } ) ;
       }
       else {
-        e.target.innerText = e.target.savedText ;
+        e.target.innerText = e.target.savedText
       }
     }
+  }
+
+  function nameKeyDown(e) {
+    if (e.keyCode === 13) {
+      e.preventDefault()
+      e.target.blur()
+      return false
+    }
+  }
+
+  function avatarSaveClick(e) {
+    const avatarInput = document.getElementById("avatar-input")
+    if (!avatarInput) throw "'#avatar-input' not found"
+
+    if(avatarInput.files.length === 0) {
+      alert("Select file")
+      return
+    }
+
+    let formData = new FormData()
+    formData.append("userAvatar", avatarInput.files[0])
+
+    fetch( "/WebBasics/register/", {
+      method: "PUT",
+      headers: {},
+      body: formData
+    })
+      .then( r => r.text() )
+      .then( t => {
+        if (t === "Ok") location = location
+        else alert(t)
+      } ) ;
   }
 </script>

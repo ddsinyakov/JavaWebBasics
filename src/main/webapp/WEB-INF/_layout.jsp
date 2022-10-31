@@ -14,6 +14,7 @@
     <title>Document</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/authfragment.jsp" />
 
     <jsp:include page="<%=pageBody%>"/>
 

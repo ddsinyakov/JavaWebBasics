@@ -9,24 +9,26 @@
 
 <div class="auth-fragment">
 
-    <form method="post" action="">
-        <label>
-            Login:
-            <input type="text" name="userLogin">
-        </label>
+    <% if (user == null ) { %>
 
-        <label>
-            Password:
-            <input type="text" name="userPassword">
-        </label>
+        <form method="post" action="">
+            <label>
+                Login:
+                <input type="text" name="userLogin">
+            </label>
 
-        <input type="hidden" name="userForm" value="true">
+            <label>
+                Password:
+                <input type="text" name="userPassword">
+            </label>
 
-        <input type="submit" value="Submit">
-        <a class="auth-sign-up" href="<%=path%>/register/"> Sign up</a>
-    </form>
+            <input type="hidden" name="userForm" value="true">
 
-    <% if (user != null) { %>
+            <input type="submit" value="Submit">
+            <a class="auth-sign-up" href="<%=path%>/register/"> Sign up</a>
+        </form>
+
+    <% } else { %>
         <h1>
            Username: <%=user.getName()%>
         </h1>
@@ -36,8 +38,7 @@
         </a>
 
         <a href="?logout=true">Log out</a>
-    <% } else if (error != null) { %>
-        <h2>User not found</h2>
     <% } %>
+
 
 </div>

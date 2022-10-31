@@ -145,16 +145,56 @@ public class RegUserServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User toChange = new User();
-        toChange.setId((String) req.getSession().getAttribute("AuthUserId"));
-        toChange.setName((String) req.getParameter("name"));
+        User auth = (User) req.getAttribute("AuthUser");
 
-        System.out.println("Id: " + toChange.getId());
-        System.out.println("Name: " + toChange.getName());
+        Part userAvatar = null;
+        try { userAvatar = req.getPart("userAvatar"); }
+        catch (Exception ignored) {}
 
-        boolean res = userDAO.updateUser(toChange);
-        if(!res) System.out.println("Something went wrong");
+        String savedName = null;
 
-        resp.getWriter().print( "PUT works " + req.getParameter( "name" ) ) ;
+        if (userAvatar != null) {
+            long size = userAvatar.getSize();
+            if (size > 0) {
+                String userFilename = userAvatar.getSubmittedFileName();
+                int dotPosition = userFilename.lastIndexOf(".");
+                if(dotPosition == -1) {
+                    resp.getWriter().print("File extension needed");
+                }
+
+                String extension = userFilename.substring(dotPosition);
+                if(!mimeService.isImage(extension)) {
+                    resp.getWriter().print("Invalid file extension");
+                }
+
+                savedName = UUID.randomUUID() + extension;
+
+                String path = req.getServletContext().getRealPath("/");
+
+                File file = new File(path + "../upload/" + savedName);
+
+                Files.copy(userAvatar.getInputStream(), file.toPath());
+            }
+        }
+
+        User toChange = new User()
+                .setId(auth.getId())
+                .setName((String) req.getParameter("name"))
+                .setLogin((String) req.getParameter("login"))
+                .setAvatar(savedName);
+
+        String login = toChange.getLogin();
+        if (login != null) {
+            if(userDAO.isLoginUsed(login)) {
+                resp.getWriter().print("Login '" + login + "' is used");
+                return;
+            }
+        }
+
+        String reply = userDAO.updateUser(toChange)
+                ? "Ok"
+                : "Update Error";
+
+        resp.getWriter().print(reply) ;
     }
 }
