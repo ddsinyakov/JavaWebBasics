@@ -75,6 +75,5 @@
     <br>
 
     <jsp:include page="fragment.jsp" />
-    <jsp:include page="footer.jsp" />
 </body>
 </html>

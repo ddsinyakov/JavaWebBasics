@@ -63,6 +63,7 @@ public class RegUserServlet extends HttpServlet {
         String userPassword = req.getParameter( "userPassword" ) ;
         String confirmPassword = req.getParameter( "confirmPassword" ) ;
         String userName = req.getParameter( "userName" ) ;
+        String userEmail = req.getParameter( "userEmail" ) ;
 
         // Валидация данных
         String errorMessage = null ;
@@ -124,6 +125,7 @@ public class RegUserServlet extends HttpServlet {
             user.setLogin( userLogin ) ;
             user.setPass( userPassword ) ;
             user.setAvatar( savedName );
+            user.setEmail( userEmail );
             if( userDAO.add( user ) == null ) {
                 throw new Exception( "Server error, try later" ) ;
             }
@@ -136,6 +138,7 @@ public class RegUserServlet extends HttpServlet {
             session.setAttribute( "regError", errorMessage ) ;
             session.setAttribute("lastUserLogin", userLogin);
             session.setAttribute("lastUserName", userName);
+            session.setAttribute("lastUserEmail", userEmail);
         }
         else {  // Успешно - нет ошибок
             session.setAttribute( "regOk", "Registration successful" ) ;
@@ -178,10 +181,7 @@ public class RegUserServlet extends HttpServlet {
         }
 
         User toChange = new User()
-                .setId(auth.getId())
-                .setName((String) req.getParameter("name"))
-                .setLogin((String) req.getParameter("login"))
-                .setAvatar(savedName);
+                .setId(auth.getId());
 
         String login = toChange.getLogin();
         if (login != null) {
@@ -190,6 +190,13 @@ public class RegUserServlet extends HttpServlet {
                 return;
             }
         }
+
+        toChange.setName((String) req.getParameter("name"))
+                .setLogin((String) req.getParameter("login"))
+                .setEmail((String) req.getParameter("email"))
+                .setAvatar(savedName);
+
+        System.out.println(toChange.getEmail());
 
         String reply = userDAO.updateUser(toChange)
                 ? "Ok"

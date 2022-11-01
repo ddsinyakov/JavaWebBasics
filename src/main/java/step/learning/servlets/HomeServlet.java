@@ -1,5 +1,8 @@
 package step.learning.servlets;
 
+import step.learning.services.email.EmailService;
+
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,11 +15,11 @@ import java.io.IOException;
 @WebServlet("")
 public class HomeServlet extends HttpServlet {
 
+    @Inject
+    private EmailService emailService;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        req.getRequestDispatcher("WEB-INF/index.jsp")
-//                .forward(req, resp);
-
         req.setAttribute("pageBody", "index.jsp");
         req.getRequestDispatcher("/WEB-INF/_layout.jsp").forward(req, resp);
     }

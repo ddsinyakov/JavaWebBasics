@@ -17,6 +17,9 @@
     <p class="profile-name">
       <span>Login:</span> <b data-fieldname="login"><%= authUser.getLogin() %></b>
     </p>
+    <p class="profile-name">
+      <span>E-mail:</span> <b data-fieldname="email"><%= authUser.getEmail() %></b>
+    </p>
     <p class="profile-fieldset-avatar">
       <span>Image:</span>
       <input type="file" id="avatar-input" name="avatar-input"> <br>

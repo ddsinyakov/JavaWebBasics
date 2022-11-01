@@ -2,6 +2,7 @@ package step.learning.dao;
 
 import step.learning.entities.User;
 import step.learning.services.database.DataBaseProvider;
+import step.learning.services.email.EmailService;
 import step.learning.services.hash.HashService;
 
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 @Singleton
@@ -19,12 +21,15 @@ public class UserDAO {
 
     private final Connection connection ;
     private final HashService hashService;
+    private final EmailService emailService;
 
     @Inject
     public UserDAO( DataBaseProvider provider,
-                    HashService hashService) {
+                    HashService hashService,
+                    EmailService emailService) {
         this.connection = provider.getConnection();
         this.hashService = hashService;
+        this.emailService = emailService;
     }
 
     /**
@@ -41,7 +46,11 @@ public class UserDAO {
 
         String passHash = this.hashPassword(user.getPass(), salt);
 
-        String sql = "INSERT INTO Users(`id`,`login`,`pass`,`name`, `salt`, `avatar`) VALUES(?,?,?,?,?,?)" ;
+        user.setEmailCode(UUID.randomUUID().toString().substring(0, 6));
+
+        String sql = "INSERT" +
+                " INTO Users(`id`, `login`, `pass`, `name`, `salt`, `avatar`, `email`, `email_code`)" +
+                " VALUES(?,?,?,?,?,?,?,?)" ;
 
         try( PreparedStatement prep = connection.prepareStatement( sql ) ) {
             prep.setString(1, id);
@@ -50,12 +59,17 @@ public class UserDAO {
             prep.setString(4, user.getName());
             prep.setString(5, salt);
             prep.setString(6, user.getAvatar());
+            prep.setString(7, user.getEmail());
+            prep.setString(8, user.getEmailCode());
             prep.executeUpdate();
         }
         catch( SQLException ex ) {
             System.out.println( ex.getMessage() ) ;
             return null ;
         }
+
+        String text = String.format("Hello, %s! Your code is %s", user.getName(), user.getEmailCode());
+        emailService.send(user.getEmail(), "Email confirmation", text);
 
         return id ;
     }
@@ -159,17 +173,23 @@ public class UserDAO {
         if( user.getName() != null ) data.put( "name", user.getName() ) ;
         if( user.getLogin() != null ) data.put( "login", user.getLogin() ) ;
         if( user.getAvatar() != null ) data.put( "avatar", user.getAvatar() ) ;
-        String sql = "UPDATE Users u SET " ;
+        if( user.getEmail() != null) {
+            user.setEmailCode(UUID.randomUUID().toString().substring(0, 6));
+            data.put("email", user.getEmail());
+            data.put("email_code", user.getEmailCode());
+        }
+
+        StringBuilder sql = new StringBuilder("UPDATE Users u SET ");
         boolean needComma = false ;
         for( String fieldName : data.keySet() ) {
-            sql += String.format( "%c u.`%s` = ?", ( needComma ? ',' : ' ' ), fieldName ) ;
+            sql.append(String.format("%c u.`%s` = ?", (needComma ? ',' : ' '), fieldName));
             needComma = true ;
         }
-        sql += " WHERE u.`id` = ? " ;
+        sql.append(" WHERE u.`id` = ? ");
         if( ! needComma ) {  // не было ни одного параметра
             return false ;
         }
-        try( PreparedStatement prep = connection.prepareStatement( sql ) ) {
+        try( PreparedStatement prep = connection.prepareStatement(sql.toString()) ) {
             int n = 1;
             for( String fieldName : data.keySet() ) {
                 prep.setString( n, data.get( fieldName ) ) ;
@@ -182,6 +202,12 @@ public class UserDAO {
             System.out.println( "UserDAO::updateUser" + ex.getMessage() ) ;
             return false ;
         }
+
+        if (user.getEmailCode() != null) {
+            String text = String.format("Hello, %s! Your code is %s", user.getName(), user.getEmailCode());
+            emailService.send(user.getEmail(), "Email confirmation", text);
+        }
+
         return true ;
     }
 }

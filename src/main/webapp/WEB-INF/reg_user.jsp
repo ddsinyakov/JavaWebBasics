@@ -33,6 +33,7 @@
 
   String lastUserLogin = (String) request.getSession().getAttribute("lastUserLogin");
   String lastUserName = (String) request.getSession().getAttribute("lastUserName");
+  String lastUserEmail = (String) request.getSession().getAttribute("lastUserEmail");
 %>
 <div class="container">
   <div class="row justify-content-center">
@@ -56,6 +57,11 @@
               <input type="text" class="form-control" name="userName" placeholder="Name Surname"
                 <% if (lastUserName != null) { %>
                      value="<%=lastUserName%>"
+                <% } %>
+              /><br>
+              <input type="email" class="form-control" name="userEmail" placeholder="Email"
+                <% if (lastUserEmail != null) { %>
+                     value="<%=lastUserEmail%>"
                 <% } %>
               /><br>
               <input type="password" class="form-control" name="userPassword" placeholder="Password"><br>

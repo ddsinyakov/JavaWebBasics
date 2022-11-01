@@ -10,6 +10,10 @@ public class User {
     private String name;
     private String salt;
     private String avatar;
+    private String email;
+    private String emailCode;
+
+
 
     public User () {
 
@@ -22,6 +26,8 @@ public class User {
         name = set.getString("name");
         salt = set.getString("salt");
         avatar = set.getString("avatar");
+        email = set.getString("email");
+        emailCode = set.getString("email_code");
     }
 
     public String getAvatar() {
@@ -75,5 +81,23 @@ public class User {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public User setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public String getEmailCode() {
+        return emailCode;
+    }
+
+    public User setEmailCode(String emailCode) {
+        this.emailCode = emailCode;
+        return this;
     }
 }
