@@ -7,10 +7,7 @@ import step.learning.services.hash.HashService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -68,7 +65,9 @@ public class UserDAO {
             return null ;
         }
 
-        String text = String.format("Hello, %s! Your code is %s", user.getName(), user.getEmailCode());
+        String text = String.format(
+                "<h2>Hello!</h2><p>Your code is <b>%s</b></p><p>Follow <a href='http://localhost:8080/WebBasics/checkmail/?userid=%s&confirm=%s'>link</a> to confirm email</p>",
+                user.getEmailCode(), user.getId(), user.getEmailCode() ) ;
         emailService.send(user.getEmail(), "Email confirmation", text);
 
         return id ;
@@ -170,19 +169,34 @@ public class UserDAO {
 
         // Задание: сформировать запрос, учитывая только те данные, которые не null (в user)
         Map<String, String> data = new HashMap<>() ;
+        Map<String, Integer> dataNumeric = new HashMap<>() ;
         if( user.getName() != null ) data.put( "name", user.getName() ) ;
         if( user.getLogin() != null ) data.put( "login", user.getLogin() ) ;
         if( user.getAvatar() != null ) data.put( "avatar", user.getAvatar() ) ;
+        if( user.getPass() != null ) {
+            String salt = hashService.hash(UUID.randomUUID().toString());
+            String passHash = this.hashPassword(user.getPass(), salt);
+
+            data.put("pass", passHash);
+            data.put("salt", salt);
+        }
         if( user.getEmail() != null) {
             user.setEmailCode(UUID.randomUUID().toString().substring(0, 6));
             data.put("email", user.getEmail());
             data.put("email_code", user.getEmailCode());
+            dataNumeric.put("email_code_attempts", 0);
         }
+
 
         StringBuilder sql = new StringBuilder("UPDATE Users u SET ");
         boolean needComma = false ;
         for( String fieldName : data.keySet() ) {
             sql.append(String.format("%c u.`%s` = ?", (needComma ? ',' : ' '), fieldName));
+            needComma = true ;
+        }
+        for( String fieldName : dataNumeric.keySet() ) {
+            sql.append(String.format("%c u.`%s` = %d",
+                    (needComma ? ',' : ' '), fieldName, dataNumeric.get(fieldName)));
             needComma = true ;
         }
         sql.append(" WHERE u.`id` = ? ");
@@ -204,10 +218,48 @@ public class UserDAO {
         }
 
         if (user.getEmailCode() != null) {
-            String text = String.format("Hello, %s! Your code is %s", user.getName(), user.getEmailCode());
+            String text = String.format(
+                    "<h2>Hello!</h2><p>Your code is <b>%s</b></p><p>Follow <a href='http://localhost:8080/WebBasics/checkmail/?userid=%s&confirm=%s'>link</a> to confirm email</p>",
+                    user.getEmailCode(), user.getId(), user.getEmailCode() ) ;
             emailService.send(user.getEmail(), "Email confirmation", text);
         }
 
         return true ;
+    }
+
+    public boolean confirmEmail(User user) {
+        if (user.getId() == null) return false;
+
+        String sql = "UPDATE Users SET email_code = NULL WHERE id = ?";
+
+        try( PreparedStatement prep = connection.prepareStatement( sql ) ) {
+            prep.setString(1, user.getId());
+            prep.executeUpdate();
+        }
+        catch( SQLException ex ) {
+            System.out.println( ex.getMessage() ) ;
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean incEmailCodeAttempts(User user) {
+        if (user == null || user.getId() == null) return false;
+        String sql = String.format("UPDATE users SET `email_code_attempts`=%d WHERE `id`=?",
+                user.getEmailCodeAttempts() + 1);
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, user.getId());
+            statement.executeUpdate();
+        }
+        catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
+
+        user.setEmailCodeAttempts(user.getEmailCodeAttempts() + 1);
+
+        return true;
     }
 }

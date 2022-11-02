@@ -150,6 +150,12 @@ public class RegUserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User auth = (User) req.getAttribute("AuthUser");
 
+        String password = req.getParameter("password");
+        if (password != null) {
+
+            return;
+        }
+
         Part userAvatar = null;
         try { userAvatar = req.getPart("userAvatar"); }
         catch (Exception ignored) {}
@@ -194,6 +200,7 @@ public class RegUserServlet extends HttpServlet {
         toChange.setName((String) req.getParameter("name"))
                 .setLogin((String) req.getParameter("login"))
                 .setEmail((String) req.getParameter("email"))
+//                .setPass((String) req.getParameter("password"))
                 .setAvatar(savedName);
 
         System.out.println(toChange.getEmail());

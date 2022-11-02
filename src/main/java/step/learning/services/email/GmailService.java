@@ -33,7 +33,7 @@ public class GmailService implements EmailService {
 
             message.setFrom(new InternetAddress("dttestemailsending@gmail.com"));
             message.setSubject(subject);
-            message.setContent(text, "text/plain");
+            message.setContent(text, "text/html");
 
             mailTransport.sendMessage(message, InternetAddress.parse(to));
             mailTransport.close();

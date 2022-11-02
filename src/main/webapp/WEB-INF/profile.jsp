@@ -19,7 +19,22 @@
     </p>
     <p class="profile-name">
       <span>E-mail:</span> <b data-fieldname="email"><%= authUser.getEmail() %></b>
+
+        <% if (authUser.getEmailCodeAttempts() >= 3) { %>
+          <br>
+          <span class="email-no-attempts">Your e-mail has been blocked. You have no more attempts to confirm your e-mail</span>
+        <% } else if(authUser.getEmailCode() == null) { %>
+          <br>
+          <span class="email-confirmed">Email confirmed successfully</span>
+        <% }%>
     </p>
+
+    <p>
+      <label>Password:<input type="password"></label><br>
+      <label>Password:<input type="password"></label><br>
+      <input type="button" value="Change button" id="change-pass-button">
+    </p>
+
     <p class="profile-fieldset-avatar">
       <span>Image:</span>
       <input type="file" id="avatar-input" name="avatar-input"> <br>
@@ -30,10 +45,14 @@
 </div>
 <script>
   document.addEventListener( "DOMContentLoaded", () => {
-    const avatarSaveButton = document.getElementById("avatar-save-button")
+    const avatarSaveButton = document.getElementById("avatar-save-button"),
+          changePassButton = document.getElementById("change-pass-button")
+
     if (!avatarSaveButton) throw "'#avatar-save-button' not found"
+    if (!changePassButton) throw "'#change-pass-button' not found"
 
     avatarSaveButton.addEventListener('click', avatarSaveClick)
+    changePassButton.addEventListener('click', changePassClick)
 
     for(let element of  document.querySelectorAll( ".profile-name b" )) {
       element.addEventListener( "click", nameClick )
@@ -107,5 +126,29 @@
         if (t === "Ok") location = location
         else alert(t)
       } ) ;
+  }
+
+  function  changePassClick(e) {
+    let passwords = e.target.parentNode.querySelectorAll('input[type="password"]')
+
+    if (passwords[0].value !== passwords[1].value) {
+      alert("Passwords mismatch")
+      return
+    }
+
+    if (passwords[0].value.length < 3) {
+      alert("Password is too short")
+      return
+    }
+
+
+
+    fetch("/WebBasics/register/?password=" + passwords[0].value,{
+      method: "PUT",
+      headers: {},
+      body: ""
+    })
+
+    passwords[0].value = passwords[1].value = ""
   }
 </script>

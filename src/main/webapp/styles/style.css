@@ -24,3 +24,14 @@ label {
 .profile-avatar {
     width: 50px;
 }
+
+.confirm-error {
+    padding: 10px;
+    border: 2px solid red;
+    color: red;
+    border-radius: 5px;
+}
+
+.email-no-attempts {
+    color: red;
+}

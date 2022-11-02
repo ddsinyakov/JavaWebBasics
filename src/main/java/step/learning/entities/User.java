@@ -12,6 +12,7 @@ public class User {
     private String avatar;
     private String email;
     private String emailCode;
+    private int emailCodeAttempts;
 
 
 
@@ -28,6 +29,16 @@ public class User {
         avatar = set.getString("avatar");
         email = set.getString("email");
         emailCode = set.getString("email_code");
+        emailCodeAttempts = set.getInt("email_code_attempts");
+    }
+
+    public int getEmailCodeAttempts() {
+        return emailCodeAttempts;
+    }
+
+    public User setEmailCodeAttempts(int emailCodeAttempts) {
+        this.emailCodeAttempts = emailCodeAttempts;
+        return this;
     }
 
     public String getAvatar() {

@@ -37,6 +37,10 @@
             <img src="<%=path%>/image/<%=user.getAvatar()%>" alt="" class="avatar">
         </a>
 
+        <% if (user.getEmailCode() != null) { %>
+            <a href="<%=path%>/checkmail/" title="You need to confirm your email">&#x1F4E7;</a>
+        <% } %>
+
         <a href="?logout=true">Log out</a>
     <% } %>
 
